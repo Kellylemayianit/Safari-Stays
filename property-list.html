@@ -883,17 +883,21 @@
                         <div class="col-lg-3 col-md-6">
                             <h5 class="text-white mb-4">Newsletter</h5>
                             <p>register today for updates on new properties.</p>
-                            <div class="position-relative mx-auto" style="max-width: 400px">
-                                <input
-                                    class="form-control bg-transparent w-100 py-3 ps-4 pe-5"
-                                    type="text"
-                                    placeholder="Your email" />
-                                <button
-                                    type="button"
-                                    class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">
-                                    SignUp
-                                </button>
-                            </div>
+                            <form action="https://formspree.io/f/mqagyypv" method="POST">
+                                <div class="position-relative mx-auto" style="max-width: 400px">
+                                    <input
+                                        class="form-control bg-transparent w-100 py-3 ps-4 pe-5"
+                                        type="email"
+                                        name="email"
+                                        placeholder="Your email"
+                                        required />
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">
+                                        SignUp
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -929,5 +933,6 @@
         <script src="js/main.js"></script>
         <!-- Search Functionality -->
         <script src="js/search.js"></script>
+        <script src="js/newsletter.js"></script>
     </body>
 </html>
