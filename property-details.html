@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -6,6 +6,18 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-D7QWPP92HY"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-D7QWPP92HY");
+        </script>
 
         <!-- Favicon -->
         <link href="img/favicon.ico" rel="icon" />
@@ -129,18 +141,87 @@
                     <div class="row g-4 align-items-center">
                         <!-- Left: Property Images Gallery -->
                         <div class="col-lg-6">
-                            <div style="background: #f8f9fa; border-radius: 10px; padding: 20px;">
-                                <div style="height: 300px; margin-bottom: 15px; border-radius: 8px; overflow: hidden;">
-                                    <img id="main404Image" src="img/chc%20bed%201.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="Property" />
+                            <div style="background: #f8f9fa; border-radius: 10px; padding: 20px">
+                                <div style="height: 300px; margin-bottom: 15px; border-radius: 8px; overflow: hidden">
+                                    <img
+                                        id="main404Image"
+                                        src="img/chc%20bed%201.jpg"
+                                        style="width: 100%; height: 100%; object-fit: cover"
+                                        alt="Property" />
                                 </div>
-                                <div style="display: flex; gap: 10px; overflow-x: auto;">
-                                    <img src="img/chc%20bed%201.jpg" class="gallery-thumb-404 active" onclick="changeImage404(this)" style="width: 70px; height: 70px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.3s;" alt="Gallery" />
-                                    <img src="img/chc%20bed%202.jpg" class="gallery-thumb-404" onclick="changeImage404(this)" style="width: 70px; height: 70px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.3s;" alt="Gallery" />
-                                    <img src="img/HSL-Beds%20king%20bed.jpg" class="gallery-thumb-404" onclick="changeImage404(this)" style="width: 70px; height: 70px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.3s;" alt="Gallery" />
-                                    <img src="img/HSL-Beds%20family%20room.jpg" class="gallery-thumb-404" onclick="changeImage404(this)" style="width: 70px; height: 70px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.3s;" alt="Gallery" />
-                                    <img src="img/property-6.jpg" class="gallery-thumb-404" onclick="changeImage404(this)" style="width: 70px; height: 70px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.3s;" alt="Gallery" />
+                                <div style="display: flex; gap: 10px; overflow-x: auto">
+                                    <img
+                                        src="img/chc%20bed%201.jpg"
+                                        class="gallery-thumb-404 active"
+                                        onclick="changeImage404(this)"
+                                        style="
+                                            width: 70px;
+                                            height: 70px;
+                                            object-fit: cover;
+                                            cursor: pointer;
+                                            border: 2px solid transparent;
+                                            border-radius: 5px;
+                                            transition: border 0.3s;
+                                        "
+                                        alt="Gallery" />
+                                    <img
+                                        src="img/chc%20bed%202.jpg"
+                                        class="gallery-thumb-404"
+                                        onclick="changeImage404(this)"
+                                        style="
+                                            width: 70px;
+                                            height: 70px;
+                                            object-fit: cover;
+                                            cursor: pointer;
+                                            border: 2px solid transparent;
+                                            border-radius: 5px;
+                                            transition: border 0.3s;
+                                        "
+                                        alt="Gallery" />
+                                    <img
+                                        src="img/HSL-Beds%20king%20bed.jpg"
+                                        class="gallery-thumb-404"
+                                        onclick="changeImage404(this)"
+                                        style="
+                                            width: 70px;
+                                            height: 70px;
+                                            object-fit: cover;
+                                            cursor: pointer;
+                                            border: 2px solid transparent;
+                                            border-radius: 5px;
+                                            transition: border 0.3s;
+                                        "
+                                        alt="Gallery" />
+                                    <img
+                                        src="img/HSL-Beds%20family%20room.jpg"
+                                        class="gallery-thumb-404"
+                                        onclick="changeImage404(this)"
+                                        style="
+                                            width: 70px;
+                                            height: 70px;
+                                            object-fit: cover;
+                                            cursor: pointer;
+                                            border: 2px solid transparent;
+                                            border-radius: 5px;
+                                            transition: border 0.3s;
+                                        "
+                                        alt="Gallery" />
+                                    <img
+                                        src="img/property-6.jpg"
+                                        class="gallery-thumb-404"
+                                        onclick="changeImage404(this)"
+                                        style="
+                                            width: 70px;
+                                            height: 70px;
+                                            object-fit: cover;
+                                            cursor: pointer;
+                                            border: 2px solid transparent;
+                                            border-radius: 5px;
+                                            transition: border 0.3s;
+                                        "
+                                        alt="Gallery" />
                                 </div>
-                                <p style="margin-top: 15px; text-align: center; color: #666;">
+                                <p style="margin-top: 15px; text-align: center; color: #666">
                                     <strong>Browse our properties while we fix this page</strong>
                                 </p>
                             </div>
@@ -148,16 +229,57 @@
 
                         <!-- Right: Chat Interface -->
                         <div class="col-lg-6">
-                            <div class="chat-container" style="background: #f8f9fa; border-radius: 10px; height: 500px; display: flex; flex-direction: column;">
-                                <div class="chat-messages" id="chatMessages" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
-                                    <div style="padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00B98E; align-self: flex-start;">
-                                        <strong>Safari AI Assistant</strong><br>
-                                        👋 Lost? I'm here to help! Ask me about properties in Kimana or anything about your stay.
+                            <div
+                                class="chat-container"
+                                style="
+                                    background: #f8f9fa;
+                                    border-radius: 10px;
+                                    height: 500px;
+                                    display: flex;
+                                    flex-direction: column;
+                                ">
+                                <div
+                                    class="chat-messages"
+                                    id="chatMessages"
+                                    style="
+                                        flex: 1;
+                                        overflow-y: auto;
+                                        padding: 20px;
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 15px;
+                                    ">
+                                    <div
+                                        style="
+                                            padding: 12px 15px;
+                                            border-radius: 8px;
+                                            background: white;
+                                            border-left: 4px solid #00b98e;
+                                            align-self: flex-start;
+                                        ">
+                                        <strong>Safari AI Assistant</strong><br />
+                                        👋 Lost? I'm here to help! Ask me about properties in Kimana or anything about
+                                        your stay.
                                     </div>
                                 </div>
-                                <div style="padding: 15px; border-top: 1px solid #ddd; display: flex; gap: 10px;">
-                                    <input type="text" id="chatInput404" placeholder="Ask a question..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" />
-                                    <button onclick="sendMessage404()" style="padding: 10px 20px; background: #00B98E; color: white; border: none; border-radius: 5px; cursor: pointer;">Send</button>
+                                <div style="padding: 15px; border-top: 1px solid #ddd; display: flex; gap: 10px">
+                                    <input
+                                        type="text"
+                                        id="chatInput404"
+                                        placeholder="Ask a question..."
+                                        style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px" />
+                                    <button
+                                        onclick="sendMessage404()"
+                                        style="
+                                            padding: 10px 20px;
+                                            background: #00b98e;
+                                            color: white;
+                                            border: none;
+                                            border-radius: 5px;
+                                            cursor: pointer;
+                                        ">
+                                        Send
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -176,7 +298,12 @@
                             <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0113556385</p>
                             <p class="mb-2"><i class="fa fa-envelope me-3"></i>kellylemayian6@gmail.com</p>
                             <div class="d-flex pt-2">
-                                <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/profile.php?id=61582723067754" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                                <a
+                                    class="btn btn-outline-light btn-social"
+                                    href="https://www.facebook.com/profile.php?id=61582723067754"
+                                    target="_blank"
+                                    ><i class="fab fa-facebook-f"></i
+                                ></a>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
@@ -220,10 +347,7 @@
                                         alt="HSL-Beds queen-bed" />
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/SGH%20twin%20bed.jpg"
-                                        alt="" />
+                                    <img class="img-fluid rounded bg-light p-1" src="img/SGH%20twin%20bed.jpg" alt="" />
                                 </div>
                             </div>
                         </div>
@@ -275,37 +399,40 @@
         <script src="lib/easing/easing.min.js"></script>
         <script src="lib/waypoints/waypoints.min.js"></script>
         <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-        
+
         <script>
-    function sendMessage404() {
-        const input = document.getElementById('chatInput404');
-        const message = input.value.trim();
-        
-        if (!message) return;
+            function sendMessage404() {
+                const input = document.getElementById("chatInput404");
+                const message = input.value.trim();
 
-        const messagesDiv = document.getElementById('chatMessages');
-        const userMsg = document.createElement('div');
-        userMsg.style.cssText = 'padding: 12px 15px; border-radius: 8px; background: #00B98E; color: white; align-self: flex-end; max-width: 80%;';
-        userMsg.textContent = message;
-        messagesDiv.appendChild(userMsg);
+                if (!message) return;
 
-        input.value = '';
+                const messagesDiv = document.getElementById("chatMessages");
+                const userMsg = document.createElement("div");
+                userMsg.style.cssText =
+                    "padding: 12px 15px; border-radius: 8px; background: #00B98E; color: white; align-self: flex-end; max-width: 80%;";
+                userMsg.textContent = message;
+                messagesDiv.appendChild(userMsg);
 
-        setTimeout(() => {
-            const botMsg = document.createElement('div');
-            botMsg.style.cssText = 'padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00B98E; align-self: flex-start; max-width: 80%;';
-            botMsg.innerHTML = '<strong>Safari AI Assistant</strong><br>Thanks! Our AI team will help you shortly. Meanwhile, visit our <a href="property-list.html" style="color: #00B98E;">properties page</a> or call 0113556385.';
-            messagesDiv.appendChild(botMsg);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }, 500);
+                input.value = "";
 
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
+                setTimeout(() => {
+                    const botMsg = document.createElement("div");
+                    botMsg.style.cssText =
+                        "padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00B98E; align-self: flex-start; max-width: 80%;";
+                    botMsg.innerHTML =
+                        '<strong>Safari AI Assistant</strong><br>Thanks! Our AI team will help you shortly. Meanwhile, visit our <a href="property-list.html" style="color: #00B98E;">properties page</a> or call 0113556385.';
+                    messagesDiv.appendChild(botMsg);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }, 500);
 
-    document.getElementById('chatInput404').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') sendMessage404();
-    });
-</script>
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            document.getElementById("chatInput404").addEventListener("keypress", function (e) {
+                if (e.key === "Enter") sendMessage404();
+            });
+        </script>
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
