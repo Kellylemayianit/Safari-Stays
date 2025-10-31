@@ -2,17 +2,17 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-            <title>[Property Name] Details & Rates - Safari Stays Kimana</title>
-            <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-            <meta
-                name="description"
-                content="View full details, photos, amenities, and current rates for [Property Name]. Easily book your room or safari lodge stay with Safari Stays in Kimana." />
-            <meta
-                name="keywords"
-                content="[Property Name] rates, lodge booking, property details, Kimana accommodation price, Amboseli amenities, Kilimanjaro View Rooms, Luxury Safari Lodge" />
-            <meta name="robots" content="index, follow" />
-            <meta name="author" content="Safari Stays" />
-            <meta name="language" content="English" />
+        <title>[Property Name] Details & Rates - Safari Stays Kimana</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <meta
+            name="description"
+            content="View full details, photos, amenities, and current rates for [Property Name]. Easily book your room or safari lodge stay with Safari Stays in Kimana." />
+        <meta
+            name="keywords"
+            content="[Property Name] rates, lodge booking, property details, Kimana accommodation price, Amboseli amenities, Kilimanjaro View Rooms, Luxury Safari Lodge" />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Safari Stays" />
+        <meta name="language" content="English" />
 
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-D7QWPP92HY"></script>
@@ -49,6 +49,7 @@
 
         <!-- Template Stylesheet -->
         <link href="css/style.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet" />
     </head>
 
     <body>
@@ -146,93 +147,270 @@
             <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="container">
                     <div class="row g-4 align-items-center">
-                        <!-- Left: Property Images Gallery -->
+                        <!-- Property Images Gallery Section -->
                         <div class="col-lg-6">
                             <div style="background: #f8f9fa; border-radius: 10px; padding: 20px">
-                                <div style="height: 300px; margin-bottom: 15px; border-radius: 8px; overflow: hidden">
+                                <!-- Main Image Display -->
+                                <div
+                                    style="
+                                        height: 400px;
+                                        margin-bottom: 15px;
+                                        border-radius: 8px;
+                                        overflow: hidden;
+                                        position: relative;
+                                    ">
                                     <img
-                                        id="main404Image"
+                                        id="mainPropertyImage"
                                         src="img/chc%20bed%201.jpg"
-                                        style="width: 100%; height: 100%; object-fit: cover"
-                                        alt="Property" />
+                                        style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in"
+                                        alt="Property Main View"
+                                        onclick="openFullscreen(this)" />
                                 </div>
-                                <div style="display: flex; gap: 10px; overflow-x: auto">
+
+                                <!-- Thumbnail Gallery -->
+                                <div style="display: flex; gap: 10px; overflow-x: auto; padding: 5px 0">
                                     <img
                                         src="img/chc%20bed%201.jpg"
-                                        class="gallery-thumb-404 active"
-                                        onclick="changeImage404(this)"
+                                        class="gallery-thumb active-thumb"
+                                        onclick="changeMainImage(this)"
                                         style="
-                                            width: 70px;
-                                            height: 70px;
+                                            width: 80px;
+                                            height: 80px;
                                             object-fit: cover;
                                             cursor: pointer;
-                                            border: 2px solid transparent;
-                                            border-radius: 5px;
-                                            transition: border 0.3s;
+                                            border: 3px solid #00b98e;
+                                            border-radius: 8px;
+                                            transition: all 0.3s;
+                                            flex-shrink: 0;
                                         "
-                                        alt="Gallery" />
+                                        alt="Property View 1" />
                                     <img
                                         src="img/chc%20bed%202.jpg"
-                                        class="gallery-thumb-404"
-                                        onclick="changeImage404(this)"
+                                        class="gallery-thumb"
+                                        onclick="changeMainImage(this)"
                                         style="
-                                            width: 70px;
-                                            height: 70px;
+                                            width: 80px;
+                                            height: 80px;
                                             object-fit: cover;
                                             cursor: pointer;
-                                            border: 2px solid transparent;
-                                            border-radius: 5px;
-                                            transition: border 0.3s;
+                                            border: 3px solid transparent;
+                                            border-radius: 8px;
+                                            transition: all 0.3s;
+                                            flex-shrink: 0;
                                         "
-                                        alt="Gallery" />
+                                        alt="Property View 2" />
                                     <img
                                         src="img/HSL-Beds%20king%20bed.jpg"
-                                        class="gallery-thumb-404"
-                                        onclick="changeImage404(this)"
+                                        class="gallery-thumb"
+                                        onclick="changeMainImage(this)"
                                         style="
-                                            width: 70px;
-                                            height: 70px;
+                                            width: 80px;
+                                            height: 80px;
                                             object-fit: cover;
                                             cursor: pointer;
-                                            border: 2px solid transparent;
-                                            border-radius: 5px;
-                                            transition: border 0.3s;
+                                            border: 3px solid transparent;
+                                            border-radius: 8px;
+                                            transition: all 0.3s;
+                                            flex-shrink: 0;
                                         "
-                                        alt="Gallery" />
+                                        alt="Property View 3" />
                                     <img
                                         src="img/HSL-Beds%20family%20room.jpg"
-                                        class="gallery-thumb-404"
-                                        onclick="changeImage404(this)"
+                                        class="gallery-thumb"
+                                        onclick="changeMainImage(this)"
                                         style="
-                                            width: 70px;
-                                            height: 70px;
+                                            width: 80px;
+                                            height: 80px;
                                             object-fit: cover;
                                             cursor: pointer;
-                                            border: 2px solid transparent;
-                                            border-radius: 5px;
-                                            transition: border 0.3s;
+                                            border: 3px solid transparent;
+                                            border-radius: 8px;
+                                            transition: all 0.3s;
+                                            flex-shrink: 0;
                                         "
-                                        alt="Gallery" />
+                                        alt="Property View 4" />
                                     <img
-                                        src="img/property-6.jpg"
-                                        class="gallery-thumb-404"
-                                        onclick="changeImage404(this)"
+                                        src="img/chc%20sitting.webp"
+                                        class="gallery-thumb"
+                                        onclick="changeMainImage(this)"
                                         style="
-                                            width: 70px;
-                                            height: 70px;
+                                            width: 80px;
+                                            height: 80px;
                                             object-fit: cover;
                                             cursor: pointer;
-                                            border: 2px solid transparent;
-                                            border-radius: 5px;
-                                            transition: border 0.3s;
+                                            border: 3px solid transparent;
+                                            border-radius: 8px;
+                                            transition: all 0.3s;
+                                            flex-shrink: 0;
                                         "
-                                        alt="Gallery" />
+                                        alt="Property View 5" />
+                                    <img
+                                        src="img/HSL-Beds%20%20Standard-Room.webp"
+                                        class="gallery-thumb"
+                                        onclick="changeMainImage(this)"
+                                        style="
+                                            width: 80px;
+                                            height: 80px;
+                                            object-fit: cover;
+                                            cursor: pointer;
+                                            border: 3px solid transparent;
+                                            border-radius: 8px;
+                                            transition: all 0.3s;
+                                            flex-shrink: 0;
+                                        "
+                                        alt="Property View 6" />
                                 </div>
-                                <p style="margin-top: 15px; text-align: center; color: #666">
-                                    <strong>Browse our properties while we fix this page</strong>
+
+                                <p style="margin-top: 15px; text-align: center; color: #666; font-size: 14px">
+                                    <i class="fa fa-hand-pointer text-primary me-2"></i>
+                                    <strong>Click thumbnails to view • Click main image to enlarge</strong>
                                 </p>
                             </div>
                         </div>
+
+                        <!-- Fullscreen Modal (Add before closing body tag) -->
+                        <div
+                            id="fullscreenModal"
+                            style="
+                                display: none;
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                background: rgba(0, 0, 0, 0.95);
+                                z-index: 9999;
+                                cursor: zoom-out;
+                            "
+                            onclick="closeFullscreen()">
+                            <span
+                                style="
+                                    position: absolute;
+                                    top: 20px;
+                                    right: 40px;
+                                    font-size: 40px;
+                                    color: white;
+                                    cursor: pointer;
+                                    z-index: 10000;
+                                "
+                                onclick="closeFullscreen()"
+                                >&times;</span
+                            >
+                            <img
+                                id="fullscreenImage"
+                                style="
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    max-width: 90%;
+                                    max-height: 90%;
+                                    object-fit: contain;
+                                "
+                                alt="Fullscreen view" />
+                        </div>
+
+                        <!-- JavaScript Functions -->
+                        <script>
+                            // Change main image when thumbnail is clicked
+                            function changeMainImage(thumbnail) {
+                                // Update main image
+                                const mainImage = document.getElementById("mainPropertyImage");
+                                mainImage.style.opacity = "0";
+
+                                setTimeout(() => {
+                                    mainImage.src = thumbnail.src;
+                                    mainImage.style.opacity = "1";
+                                }, 150);
+
+                                // Update active thumbnail styling
+                                const allThumbs = document.querySelectorAll(".gallery-thumb");
+                                allThumbs.forEach((thumb) => {
+                                    thumb.style.border = "3px solid transparent";
+                                    thumb.style.opacity = "0.7";
+                                });
+
+                                thumbnail.style.border = "3px solid #00b98e";
+                                thumbnail.style.opacity = "1";
+                            }
+
+                            // Open image in fullscreen
+                            function openFullscreen(img) {
+                                const modal = document.getElementById("fullscreenModal");
+                                const fullscreenImg = document.getElementById("fullscreenImage");
+                                modal.style.display = "block";
+                                fullscreenImg.src = img.src;
+                                document.body.style.overflow = "hidden";
+                            }
+
+                            // Close fullscreen modal
+                            function closeFullscreen() {
+                                const modal = document.getElementById("fullscreenModal");
+                                modal.style.display = "none";
+                                document.body.style.overflow = "auto";
+                            }
+
+                            // Add hover effect to thumbnails
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const thumbnails = document.querySelectorAll(".gallery-thumb");
+                                thumbnails.forEach((thumb) => {
+                                    thumb.addEventListener("mouseenter", function () {
+                                        if (this.style.border !== "3px solid rgb(0, 185, 142)") {
+                                            this.style.opacity = "1";
+                                            this.style.transform = "scale(1.1)";
+                                        }
+                                    });
+
+                                    thumb.addEventListener("mouseleave", function () {
+                                        if (this.style.border !== "3px solid rgb(0, 185, 142)") {
+                                            this.style.opacity = "0.7";
+                                            this.style.transform = "scale(1)";
+                                        }
+                                    });
+                                });
+
+                                // Set initial opacity for non-active thumbnails
+                                thumbnails.forEach((thumb, index) => {
+                                    if (index !== 0) {
+                                        thumb.style.opacity = "0.7";
+                                    }
+                                });
+                            });
+
+                            // Add CSS transition to main image
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const mainImage = document.getElementById("mainPropertyImage");
+                                mainImage.style.transition = "opacity 0.3s ease";
+                            });
+
+                            // Keyboard navigation
+                            document.addEventListener("keydown", function (e) {
+                                if (e.key === "Escape") {
+                                    closeFullscreen();
+                                }
+                            });
+                        </script>
+
+                        <style>
+                            /* Smooth scrolling for thumbnail gallery */
+                            .gallery-thumb::-webkit-scrollbar {
+                                height: 8px;
+                            }
+
+                            .gallery-thumb::-webkit-scrollbar-track {
+                                background: #f1f1f1;
+                                border-radius: 10px;
+                            }
+
+                            .gallery-thumb::-webkit-scrollbar-thumb {
+                                background: #00b98e;
+                                border-radius: 10px;
+                            }
+
+                            .gallery-thumb::-webkit-scrollbar-thumb:hover {
+                                background: #008f6e;
+                            }
+                        </style>
 
                         <!-- Right: Chat Interface -->
                         <div class="col-lg-6">
@@ -324,37 +502,88 @@
                             <h5 class="text-white mb-4">Photo Gallery</h5>
                             <div class="row g-2 pt-2">
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/chc%20bed%201.jpg"
-                                        alt="chc bed 1" />
+                                    <a
+                                        href="img/chc%20bed%201.jpg"
+                                        data-lightbox="gallery"
+                                        data-title="Crystal Homes - Bedroom 1">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/chc%20bed%201.jpg"
+                                            alt="chc bed 1"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/chc%20bed%202.jpg"
-                                        alt="chc bed 2" />
+                                    <a
+                                        href="img/chc%20bed%202.jpg"
+                                        data-lightbox="gallery"
+                                        data-title="Crystal Homes - Bedroom 2">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/chc%20bed%202.jpg"
+                                            alt="chc bed 2"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/HSL-Beds%20%20Standard-Room.webp"
-                                        alt="HSL-Beds Standard-Room" />
+                                    <a
+                                        href="img/HSL-Beds%20%20Standard-Room.webp"
+                                        data-lightbox="gallery"
+                                        data-title="Hillstone Safari Lodge - Standard Room">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/HSL-Beds%20%20Standard-Room.webp"
+                                            alt="HSL-Beds Standard-Room"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/HSL-Beds%20king%20bed.jpg"
-                                        alt="HSL-Beds king-bed" />
+                                    <a
+                                        href="img/HSL-Beds%20king%20bed.jpg"
+                                        data-lightbox="gallery"
+                                        data-title="Hillstone Safari Lodge - King Bed">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/HSL-Beds%20king%20bed.jpg"
+                                            alt="HSL-Beds king-bed"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/HSL-Beds%20queen%20bed.webp"
-                                        alt="HSL-Beds queen-bed" />
+                                    <a
+                                        href="img/HSL-Beds%20queen%20bed.webp"
+                                        data-lightbox="gallery"
+                                        data-title="Hillstone Safari Lodge - Queen Bed">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/HSL-Beds%20queen%20bed.webp"
+                                            alt="HSL-Beds queen-bed"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img class="img-fluid rounded bg-light p-1" src="img/SGH%20twin%20bed.jpg" alt="" />
+                                    <a
+                                        href="img/SGH%20twin%20bed.jpg"
+                                        data-lightbox="gallery"
+                                        data-title="Sironosim Gardens Hotel - Twin Bed">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/SGH%20twin%20bed.jpg"
+                                            alt="SGH twin bed"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -406,6 +635,7 @@
         <script src="lib/easing/easing.min.js"></script>
         <script src="lib/waypoints/waypoints.min.js"></script>
         <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
         <script>
             function sendMessage404() {

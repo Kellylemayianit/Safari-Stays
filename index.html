@@ -50,6 +50,7 @@
 
         <!-- Template Stylesheet -->
         <link href="css/style.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet" />
     </head>
 
     <body>
@@ -329,37 +330,88 @@
                             <h5 class="text-white mb-4">Photo Gallery</h5>
                             <div class="row g-2 pt-2">
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/chc%20bed%201.jpg"
-                                        alt="chc bed 1" />
+                                    <a
+                                        href="img/chc%20bed%201.jpg"
+                                        data-lightbox="gallery"
+                                        data-title="Crystal Homes - Bedroom 1">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/chc%20bed%201.jpg"
+                                            alt="chc bed 1"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/chc%20bed%202.jpg"
-                                        alt="chc bed 2" />
+                                    <a
+                                        href="img/chc%20bed%202.jpg"
+                                        data-lightbox="gallery"
+                                        data-title="Crystal Homes - Bedroom 2">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/chc%20bed%202.jpg"
+                                            alt="chc bed 2"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/HSL-Beds%20%20Standard-Room.webp"
-                                        alt="HSL-Beds Standard-Room" />
+                                    <a
+                                        href="img/HSL-Beds%20%20Standard-Room.webp"
+                                        data-lightbox="gallery"
+                                        data-title="Hillstone Safari Lodge - Standard Room">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/HSL-Beds%20%20Standard-Room.webp"
+                                            alt="HSL-Beds Standard-Room"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/HSL-Beds%20king%20bed.jpg"
-                                        alt="HSL-Beds king-bed" />
+                                    <a
+                                        href="img/HSL-Beds%20king%20bed.jpg"
+                                        data-lightbox="gallery"
+                                        data-title="Hillstone Safari Lodge - King Bed">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/HSL-Beds%20king%20bed.jpg"
+                                            alt="HSL-Beds king-bed"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img
-                                        class="img-fluid rounded bg-light p-1"
-                                        src="img/HSL-Beds%20queen%20bed.webp"
-                                        alt="HSL-Beds queen-bed" />
+                                    <a
+                                        href="img/HSL-Beds%20queen%20bed.webp"
+                                        data-lightbox="gallery"
+                                        data-title="Hillstone Safari Lodge - Queen Bed">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/HSL-Beds%20queen%20bed.webp"
+                                            alt="HSL-Beds queen-bed"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                                 <div class="col-4">
-                                    <img class="img-fluid rounded bg-light p-1" src="img/SGH%20twin%20bed.jpg" alt="" />
+                                    <a
+                                        href="img/SGH%20twin%20bed.jpg"
+                                        data-lightbox="gallery"
+                                        data-title="Sironosim Gardens Hotel - Twin Bed">
+                                        <img
+                                            class="img-fluid rounded bg-light p-1"
+                                            src="img/SGH%20twin%20bed.jpg"
+                                            alt="SGH twin bed"
+                                            style="cursor: pointer; transition: transform 0.3s"
+                                            onmouseover="this.style.transform='scale(1.1)'"
+                                            onmouseout="this.style.transform='scale(1)'" />
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -411,6 +463,7 @@
         <script src="lib/easing/easing.min.js"></script>
         <script src="lib/waypoints/waypoints.min.js"></script>
         <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
