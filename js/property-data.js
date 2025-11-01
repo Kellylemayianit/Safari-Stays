@@ -40,7 +40,7 @@ const properties = [
         disclaimer: "Note: Some images are representative. Contact us for current property photos."
     },
     {
-        id: "eleghtant-bnb",
+        id: "elighant-bnb", // Changed from eleghtant-bnb to match HTML
         name: "Eleghtant BnB",
         type: "BnB",
         price: "Ksh 3,500",
@@ -292,28 +292,109 @@ const properties = [
 	window.sanitizeImagePaths = sanitizeImagePaths;
 	window.parsePrice = parsePrice;
 
-	// Open property details: accept id or full property object
-	function openPropertyDetails(idOrObject) {
-		let prop = null;
-		if (!idOrObject) return;
-		if (typeof idOrObject === 'string') {
-			prop = getPropertyById(idOrObject);
-		} else if (typeof idOrObject === 'object' && idOrObject.id) {
-			prop = idOrObject;
-		}
-		if (!prop) return;
-		try {
-			sessionStorage.setItem('selectedProperty', JSON.stringify(prop));
-		} catch (e) {
-			// ignore storage errors
-		}
-		// Navigate to details page with id in querystring as fallback
-		const id = encodeURIComponent(prop.id || '');
-		window.location.href = `property-details.html?id=${id}`;
-	}
+    // ====================
+    // Enhanced Functionality
+    // ====================
 
-	window.openPropertyDetails = openPropertyDetails;
+    (function () {
+        // Add loading state tracking
+        let isLoading = false;
+        const loadingListeners = new Set();
 
-	// Run sanitizer once on load
-	sanitizeImagePaths();
+        function setLoading(loading) {
+            isLoading = loading;
+            loadingListeners.forEach(callback => callback(loading));
+        }
+
+        // Track property views
+        function incrementViewCount(propertyId) {
+            try {
+                const views = JSON.parse(localStorage.getItem('propertyViews') || '{}');
+                views[propertyId] = (views[propertyId] || 0) + 1;
+                localStorage.setItem('propertyViews', JSON.stringify(views));
+            } catch (e) {
+                console.warn('Failed to track property view', e);
+            }
+        }
+
+        // Get related/similar properties
+        function getSimilarProperties(propertyId, limit = 3) {
+            const current = getPropertyById(propertyId);
+            if (!current) return [];
+            
+            return properties
+                .filter(p => p.id !== propertyId && p.type === current.type)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, limit);
+        }
+
+        // Get next/previous property
+        function getAdjacentProperties(propertyId) {
+            const index = properties.findIndex(p => p.id === propertyId);
+            if (index === -1) return {};
+            
+            return {
+                previous: index > 0 ? properties[index - 1] : null,
+                next: index < properties.length - 1 ? properties[index + 1] : null
+            };
+        }
+
+        // Enhanced openPropertyDetails
+        function openPropertyDetails(idOrObject) {
+            setLoading(true);
+            
+            let prop = null;
+            if (!idOrObject) return;
+            if (typeof idOrObject === 'string') {
+                prop = getPropertyById(idOrObject);
+            } else if (typeof idOrObject === 'object' && idOrObject.id) {
+                prop = idOrObject;
+            }
+            if (!prop) {
+                setLoading(false);
+                return;
+            }
+
+            // Track view
+            incrementViewCount(prop.id);
+
+            // Get related data
+            const { previous, next } = getAdjacentProperties(prop.id);
+            const similar = getSimilarProperties(prop.id);
+
+            // Store enhanced data
+            try {
+                sessionStorage.setItem('selectedProperty', JSON.stringify({
+                    ...prop,
+                    navigation: { previous, next },
+                    similar,
+                    viewCount: JSON.parse(localStorage.getItem('propertyViews') || '{}')[prop.id] || 0
+                }));
+            } catch (e) {
+                console.warn('Failed to store property data', e);
+            }
+
+            // Navigate with loading state
+            const id = encodeURIComponent(prop.id || '');
+            setTimeout(() => {
+                window.location.href = `property-details.html?id=${id}`;
+            }, 300); // Short delay for loading animation
+        }
+
+        // Expose enhanced functionality
+        Object.assign(window, {
+            properties,
+            getPropertyById,
+            findProperties,
+            sanitizeImagePaths,
+            parsePrice,
+            openPropertyDetails,
+            onLoadingChange: callback => loadingListeners.add(callback),
+            getSimilarProperties,
+            getAdjacentProperties
+        });
+
+        // Run initializations
+        sanitizeImagePaths();
+    })();
 })();

@@ -50,9 +50,14 @@
         <!-- Template Stylesheet -->
         <link href="css/style.css" rel="stylesheet" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet" />
+        <link href="css/transitions.css" rel="stylesheet" />
+        <link href="css/loading-states.css" rel="stylesheet" />
     </head>
 
     <body>
+        <div class="loading-overlay">
+            <div class="loading-spinner"></div>
+        </div>
         <div class="container-xxl bg-white p-0">
             <!-- Navbar Start -->
             <div class="container-fluid nav-bar bg-transparent">
@@ -1058,5 +1063,27 @@
 			document.addEventListener('DOMContentLoaded', initPropertyListLinks);
 		})();
 		</script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove loading state after images load
+            document.querySelectorAll('.property-item').forEach(item => {
+                const img = item.querySelector('img');
+                if (img) {
+                    if (img.complete) {
+                        item.classList.remove('loading');
+                    } else {
+                        img.onload = () => item.classList.remove('loading');
+                    }
+                }
+            });
+
+            // Add loading state when clicking property
+            document.querySelectorAll('[data-prop-id]').forEach(el => {
+                el.addEventListener('click', function() {
+                    this.closest('.property-item').classList.add('loading');
+                });
+            });
+        });
+    </script>
     </body>
 </html>
