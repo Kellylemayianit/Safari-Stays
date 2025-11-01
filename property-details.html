@@ -670,6 +670,75 @@
                 if (e.key === "Enter") sendMessage404();
             });
         </script>
+        
+        <!-- Add AFTER all other scripts, BEFORE </body> -->
+<script src="js/property-data.js"></script>
+<script>
+function loadPropertyDetails() {
+    const propertyData = sessionStorage.getItem('selectedProperty');
+    
+    if (!propertyData) {
+        document.getElementById('chatMessages').innerHTML = `
+            <div style="padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00b98e; align-self: flex-start;">
+                <strong>Safari AI Assistant</strong><br/>
+                👋 Welcome! Please select a property from our <a href="property-list.html" style="color: #00b98e;">properties page</a> to view details.
+            </div>
+        `;
+        return;
+    }
+    
+    const property = JSON.parse(propertyData);
+    document.title = `${property.name} - Safari Stays Kimana`;
+    
+    const mainImage = document.getElementById('mainPropertyImage');
+    if (mainImage && property.images.length > 0) {
+        mainImage.src = property.images[0];
+    }
+    
+    const galleryContainer = document.querySelector('.gallery-thumb').parentElement;
+    if (galleryContainer) {
+        galleryContainer.innerHTML = property.images.map((img, index) => `
+            <img
+                src="${img}"
+                class="gallery-thumb ${index === 0 ? 'active-thumb' : ''}"
+                onclick="changeMainImage(this)"
+                style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 3px solid ${index === 0 ? '#00b98e' : 'transparent'}; border-radius: 8px; transition: all 0.3s; flex-shrink: 0; opacity: ${index === 0 ? '1' : '0.7'};"
+                alt="${property.name} - View ${index + 1}" />
+        `).join('');
+    }
+    
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = `
+        <div style="padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00b98e; align-self: flex-start;">
+            <strong>Safari AI Assistant</strong><br/>
+            👋 Welcome! I'm here to help you with <strong>${property.name}</strong>
+        </div>
+        <div style="padding: 15px; border-radius: 8px; background: white; border: 1px solid #ddd; align-self: flex-start; max-width: 100%;">
+            <h5 style="color: #00b98e; margin: 0 0 10px 0;">${property.name}</h5>
+            <p style="margin: 5px 0;"><strong>Type:</strong> ${property.type}</p>
+            <p style="margin: 5px 0;"><strong>Price:</strong> <span style="color: #00b98e; font-size: 1.2em;">${property.price}</span> per night</p>
+            <p style="margin: 5px 0;"><strong>Location:</strong> ${property.location}</p>
+            <p style="margin: 5px 0;"><strong>Room Size:</strong> ${property.sqft}</p>
+            <p style="margin: 5px 0;"><strong>Beds:</strong> ${property.beds} | <strong>Baths:</strong> ${property.baths}</p>
+            <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+            <p style="margin: 10px 0;"><strong>Description:</strong><br/>${property.description}</p>
+            <p style="margin: 10px 0;"><strong>Amenities:</strong><br/>
+                ${property.amenities.map(a => `<span style="display: inline-block; background: #f0f0f0; padding: 3px 8px; margin: 2px; border-radius: 3px; font-size: 0.85em;">✓ ${a}</span>`).join('')}
+            </p>
+            <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+            <p style="margin: 5px 0;"><strong>📞 Contact:</strong> <a href="https://wa.me/${property.contact.replace(/\+/g, '').replace(/\s/g, '')}" target="_blank" style="color: #00b98e;">${property.contact}</a></p>
+        </div>
+        <div style="padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00b98e; align-self: flex-start;">
+            <strong>Safari AI Assistant</strong><br/>
+            Feel free to ask me any questions about this property, availability, or booking process!
+        </div>
+    `;
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', loadPropertyDetails);
+</script>
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
