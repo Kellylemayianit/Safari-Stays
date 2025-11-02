@@ -473,30 +473,6 @@
             </div>
             <!-- 404 End -->
 
-            <!-- Property Details End -->
-
-            <!-- Property Navigation Start -->
-            <div class="container-xxl py-5">
-                <div class="container">
-                    <div class="bg-light rounded p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="property-list.html" class="btn btn-outline-primary">
-                                <i class="bi bi-arrow-left"></i> Back to List
-                            </a>
-                            <div>
-                                <a href="#" class="btn btn-primary mx-2" onclick="history.back()">
-                                    <i class="bi bi-arrow-left"></i> Previous
-                                </a>
-                                <a href="property-list.html" class="btn btn-primary">
-                                    View All Properties
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Property Navigation End -->
-
             <!-- Footer Start -->
             <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
                 <div class="container py-5">
@@ -652,7 +628,15 @@
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
         </div>
 
-        <!-- Keep your chat sendMessage code (no change) -->
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="lib/wow/wow.min.js"></script>
+        <script src="lib/easing/easing.min.js"></script>
+        <script src="lib/waypoints/waypoints.min.js"></script>
+        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
         <script>
             function sendMessage404() {
                 const input = document.getElementById("chatInput404");
@@ -687,19 +671,78 @@
             });
         </script>
 
-        <!-- BOTTOM: required scripts and property system (correct order) -->
-        <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="lib/wow/wow.min.js"></script>
-        <script src="lib/easing/easing.min.js"></script>
-        <script src="lib/waypoints/waypoints.min.js"></script>
-        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-
-        <!-- Property System (LOAD IN THIS ORDER) -->
+        <!-- Add AFTER all other scripts, BEFORE </body> -->
         <script src="js/property-data.js"></script>
-        <script src="js/property-details.js"></script>
+        <script>
+            function loadPropertyDetails() {
+                const propertyData = sessionStorage.getItem("selectedProperty");
+
+                if (!propertyData) {
+                    document.getElementById("chatMessages").innerHTML = `
+            <div style="padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00b98e; align-self: flex-start;">
+                <strong>Safari AI Assistant</strong><br/>
+                👋 Welcome! Please select a property from our <a href="property-list.html" style="color: #00b98e;">properties page</a> to view details.
+            </div>
+        `;
+                    return;
+                }
+
+                const property = JSON.parse(propertyData);
+                document.title = `${property.name} - Safari Stays Kimana`;
+
+                const mainImage = document.getElementById("mainPropertyImage");
+                if (mainImage && property.images.length > 0) {
+                    mainImage.src = property.images[0];
+                }
+
+                const galleryContainer = document.querySelector(".gallery-thumb").parentElement;
+                if (galleryContainer) {
+                    galleryContainer.innerHTML = property.images
+                        .map(
+                            (img, index) => `
+            <img
+                src="${img}"
+                class="gallery-thumb ${index === 0 ? "active-thumb" : ""}"
+                onclick="changeMainImage(this)"
+                style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 3px solid ${index === 0 ? "#00b98e" : "transparent"}; border-radius: 8px; transition: all 0.3s; flex-shrink: 0; opacity: ${index === 0 ? "1" : "0.7"};"
+                alt="${property.name} - View ${index + 1}" />
+        `
+                        )
+                        .join("");
+                }
+
+                const chatMessages = document.getElementById("chatMessages");
+                chatMessages.innerHTML = `
+        <div style="padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00b98e; align-self: flex-start;">
+            <strong>Safari AI Assistant</strong><br/>
+            👋 Welcome! I'm here to help you with <strong>${property.name}</strong>
+        </div>
+        <div style="padding: 15px; border-radius: 8px; background: white; border: 1px solid #ddd; align-self: flex-start; max-width: 100%;">
+            <h5 style="color: #00b98e; margin: 0 0 10px 0;">${property.name}</h5>
+            <p style="margin: 5px 0;"><strong>Type:</strong> ${property.type}</p>
+            <p style="margin: 5px 0;"><strong>Price:</strong> <span style="color: #00b98e; font-size: 1.2em;">${property.price}</span> per night</p>
+            <p style="margin: 5px 0;"><strong>Location:</strong> ${property.location}</p>
+            <p style="margin: 5px 0;"><strong>Room Size:</strong> ${property.sqft}</p>
+            <p style="margin: 5px 0;"><strong>Beds:</strong> ${property.beds} | <strong>Baths:</strong> ${property.baths}</p>
+            <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+            <p style="margin: 10px 0;"><strong>Description:</strong><br/>${property.description}</p>
+            <p style="margin: 10px 0;"><strong>Amenities:</strong><br/>
+                ${property.amenities.map((a) => `<span style="display: inline-block; background: #f0f0f0; padding: 3px 8px; margin: 2px; border-radius: 3px; font-size: 0.85em;">✓ ${a}</span>`).join("")}
+            </p>
+            <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+            <p style="margin: 5px 0;"><strong>📞 Contact:</strong> <a href="https://wa.me/${property.contact.replace(/\+/g, "").replace(/\s/g, "")}" target="_blank" style="color: #00b98e;">${property.contact}</a></p>
+        </div>
+        <div style="padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00b98e; align-self: flex-start;">
+            <strong>Safari AI Assistant</strong><br/>
+            Feel free to ask me any questions about this property, availability, or booking process!
+        </div>
+    `;
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            document.addEventListener("DOMContentLoaded", loadPropertyDetails);
+        </script>
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
