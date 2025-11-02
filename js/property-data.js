@@ -37,7 +37,8 @@ const properties = {
             'img/chc%20bed%201.jpg',
             'img/chc%20bed%202.jpg',
             'img/chc%20sitting.webp',
-            'img/chc%20sitting%202.jpg'
+            'img/chc%20sitting%202.jpg',
+            'img/chc%20kitchen.jpg',
         ],
         description: 'Spacious 2-bedroom home with modern amenities. Perfect for families or small groups visiting Amboseli.',
         amenities: ['WiFi', 'Hot Water', 'Parking', 'Full Kitchen', 'Living Room', 'Garden'],
