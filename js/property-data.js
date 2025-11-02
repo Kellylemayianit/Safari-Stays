@@ -15,8 +15,11 @@ const properties = {
         baths: '1 Bath',
         images: [
             'img/likizo%20bnb%20bed.jpg',
-            'img/property-6.jpg',
-            'img/chc%20bed%201.jpg'
+            'img/likizo%20bnb%20kitchen.jpg',
+            'img/likizo%20bnb%20outlook.jpg',
+            'img/likizo%20bnb%20sits.jpg',
+            'img/likizo%20bnb%20tv.jpg',
+            'img/likizo%20bnb%20washroom.jpg',
         ],
         description: 'Cozy Airbnb perfect for solo travelers or couples. Located in the heart of Kimana with easy access to Amboseli National Park.',
         amenities: ['WiFi', 'Hot Water', 'Parking', 'Kitchen', 'TV'],
