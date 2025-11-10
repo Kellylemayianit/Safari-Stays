@@ -1,17 +1,31 @@
 // ==========================================
-// COMPLETE SAFARI STAYS AI CHAT SYSTEM
-// Place in: js/chat-assistant.js
+// SAFARI STAYS AI CHAT SYSTEM - N8N BACKEND
+// Replace your existing js/chat-assistant.js with this file
 // ==========================================
 
+// ==========================================
+// N8N WEBHOOK CONFIGURATION
+// ==========================================
+const N8N_CONFIG = {
+    // DEVELOPMENT: localhost webhook
+    webhookUrl: 'http://localhost:5678/webhook-test/safari-assistant',
+    
+    // PRODUCTION: Change this when you deploy n8n to a real server
+    // webhookUrl: 'https://n8n.yourdomain.com/webhook/safari-assistant',
+    
+    timeout: 30000 // 30 seconds
+};
 
-
+// Rate limiting configuration
+const RATE_LIMIT = {
+    maxMessages: 15,
+    resetTime: 3600000 // 1 hour in milliseconds
+};
 
 // ==========================================
 // CLIENT DATA CAPTURE SYSTEM
-// Add to: js/chat-assistant.js (at the beginning)
 // ==========================================
 
-// Store client data globally
 let clientData = {
     name: null,
     email: null,
@@ -20,11 +34,41 @@ let clientData = {
     captured: false
 };
 
+// Conversation history for context
+let conversationHistory = [];
+let messageCount = 0;
+let lastResetTime = Date.now();
+
+// Current property data (loaded from sessionStorage)
+let currentPropertyData = null;
+
+// ==========================================
+// RATE LIMITING
+// ==========================================
+function checkRateLimit() {
+    const now = Date.now();
+    
+    // Reset counter every hour
+    if (now - lastResetTime > RATE_LIMIT.resetTime) {
+        messageCount = 0;
+        lastResetTime = now;
+    }
+    
+    if (messageCount >= RATE_LIMIT.maxMessages) {
+        return {
+            allowed: false,
+            message: `You've reached the message limit (${RATE_LIMIT.maxMessages} per hour). Please try again later or contact us directly at +254113556385.`
+        };
+    }
+    
+    messageCount++;
+    return { allowed: true };
+}
+
 // ==========================================
 // 1. CHECK IF CLIENT DATA IS CAPTURED
 // ==========================================
 function isClientDataCaptured() {
-    // Check localStorage for persistent storage
     const savedData = localStorage.getItem('safaristays_client');
     if (savedData) {
         clientData = JSON.parse(savedData);
@@ -35,9 +79,9 @@ function isClientDataCaptured() {
 }
 
 // ==========================================
-// 2. SAVE CLIENT DATA (UPDATED to Async)
+// 2. SAVE CLIENT DATA
 // ==========================================
-async function saveClientData(name, email, phone, interest) { // <-- ADD async
+async function saveClientData(name, email, phone, interest) {
     clientData = {
         name: name.trim(),
         email: email.trim(),
@@ -47,44 +91,36 @@ async function saveClientData(name, email, phone, interest) { // <-- ADD async
         timestamp: new Date().toISOString()
     };
     
-    // Save to localStorage (persists across pages)
     localStorage.setItem('safaristays_client', JSON.stringify(clientData));
     
-    // Await the asynchronous Formspree submission before continuing the flow
     const submissionSuccess = await sendClientDataToBackend(clientData);
     
-    // Return the client data and the success status of the submission
     return {
         clientData,
         submissionSuccess
     };
 }
 
-
-
 // ==========================================
-// 3. SEND DATA TO BACKEND (Formspree Integration)
+// 3. SEND DATA TO BACKEND (Formspree)
 // ==========================================
 async function sendClientDataToBackend(data) {
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xkgplpdo'; // Your provided Formspree URL
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xkgplpdo';
     
-    // Prepare data to send (Formspree fields are based on the keys in the JSON)
     const payload = {
         name: data.name,
         email: data.email,
         phone: data.phone,
         interest: data.interest,
-        // The property data is available through the global variable
-        property: currentPropertyData ? currentPropertyData.name : 'None', 
+        property: currentPropertyData ? currentPropertyData.name : 'None',
         timestamp: data.timestamp
     };
     
     try {
         const response = await fetch(FORMSPREE_ENDPOINT, {
             method: 'POST',
-            // Setting 'Accept': 'application/json' tells Formspree we want a JSON response
             headers: {
-                'Content-Type': 'application/json', 
+                'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
             body: JSON.stringify(payload)
@@ -92,17 +128,16 @@ async function sendClientDataToBackend(data) {
 
         if (response.ok) {
             console.log("✅ Lead data successfully submitted to Formspree!");
-            return true; // Submission successful
+            return true;
         } else {
             console.error('⚠️ Formspree submission failed. Status:', response.status);
-            // Log the error details from Formspree for debugging
-            const errorData = await response.json(); 
+            const errorData = await response.json();
             console.error('Error Details:', errorData);
-            return false; // Submission failed
+            return false;
         }
     } catch (error) {
         console.error('❌ Network Error during Formspree submission:', error);
-        return false; // Submission failed
+        return false;
     }
 }
 
@@ -177,9 +212,9 @@ function showClientDataForm() {
 }
 
 // ==========================================
-// 5. HANDLE FORM SUBMISSION (UPDATED for Async)
+// 5. HANDLE FORM SUBMISSION
 // ==========================================
-async function handleClientDataSubmit(event) { // <-- ADD async
+async function handleClientDataSubmit(event) {
     event.preventDefault();
     
     const name = document.getElementById('clientName').value;
@@ -187,19 +222,16 @@ async function handleClientDataSubmit(event) { // <-- ADD async
     const phone = document.getElementById('clientPhone').value;
     const interest = document.getElementById('clientInterest').value;
     
-    // Validate phone number format
     if (!phone.match(/^[+]?[0-9]{10,15}$/)) {
         alert('Please enter a valid phone number (10-15 digits)');
         return;
     }
     
-    // Save data and await Formspree submission
-    const result = await saveClientData(name, email, phone, interest); // <-- ADD await
+    const result = await saveClientData(name, email, phone, interest);
     
     const chatMessages = document.getElementById('chatMessages');
     
     if (result.submissionSuccess) {
-        // Formspree was successful, show the success message
         chatMessages.innerHTML = `
             <div style="padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; color: #155724; text-align: center;">
                 <strong>✅ Thank you, ${name}!</strong><br/>
@@ -207,12 +239,10 @@ async function handleClientDataSubmit(event) { // <-- ADD async
             </div>
         `;
         
-        // This initiates the "redirect" (transition to the chat interface) after 1 second
         setTimeout(() => {
             initializeChatWithClientData();
         }, 1000);
     } else {
-         // Formspree failed, show an error message
         chatMessages.innerHTML = `
             <div style="padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; color: #721c24; text-align: center;">
                 <strong>❌ Submission Failed.</strong><br/>
@@ -221,8 +251,6 @@ async function handleClientDataSubmit(event) { // <-- ADD async
         `;
     }
 }
-
-
 
 // ==========================================
 // 6. INITIALIZE CHAT WITH CLIENT DATA
@@ -238,16 +266,15 @@ function initializeChatWithClientData() {
             ${currentPropertyData ? `<br/><br/>I see you're interested in <strong>${propertyName}</strong>. ` : ''}
             I'm here to help you with:
             <ul style="margin: 10px 0 0 0; padding-left: 20px;">
-                <li>Pricing and rates</li>
+                <li>Property details and pricing</li>
                 <li>Amenities & facilities</li>
-                <li>Booking process</li>
-                <li>Any questions you have!</li>
+                <li>Booking process & policies</li>
+                <li>Local area information</li>
             </ul>
             What would you like to know?
         </div>
     `;
     
-    // Enable chat input
     const chatInput = document.getElementById('chatInput404');
     if (chatInput) {
         chatInput.disabled = false;
@@ -257,10 +284,256 @@ function initializeChatWithClientData() {
 }
 
 // ==========================================
-// 7. CLEAR CLIENT DATA (for testing/logout)
+// 7. FORMAT PROPERTY CONTEXT
+// ==========================================
+function formatPropertyContext(propertyData) {
+    if (!propertyData) return null;
+
+    return {
+        property_name: propertyData.name || "Unknown Property",
+        type: propertyData.type || "Accommodation",
+        price_per_night: propertyData.price || "Price on request",
+        location: propertyData.location || "Kimana, Kajiado County",
+        room_size: propertyData.sqft || "Standard",
+        beds: propertyData.beds || "N/A",
+        bathrooms: propertyData.baths || "N/A",
+        description: propertyData.description || "No description available",
+        amenities: Array.isArray(propertyData.amenities) 
+            ? propertyData.amenities 
+            : [],
+        contact_number: propertyData.contact || "+254113556385"
+    };
+}
+
+// ==========================================
+// 8. BUILD PAYLOAD FOR N8N WEBHOOK
+// ==========================================
+function buildN8NPayload(userMessage) {
+    const payload = {
+        // The user's current message
+        user_message: userMessage,
+        
+        // Conversation history (last 5 exchanges = 10 messages)
+        conversation_history: conversationHistory.slice(-10),
+        
+        // Client information
+        client_data: {
+            name: clientData.name,
+            email: clientData.email,
+            phone: clientData.phone,
+            interest: clientData.interest
+        },
+        
+        // Property context (if viewing a specific property)
+        property_context: currentPropertyData ? formatPropertyContext(currentPropertyData) : null,
+        
+        // General Safari Stays information
+        general_context: {
+            business_name: "Safari Stays",
+            location: "Kimana, Kajiado County, Kenya",
+            contact_phone: "+254113556385",
+            contact_email: "kellylemayian6@gmail.com",
+            whatsapp: "+254113556385",
+            check_in: "2:00 PM - 6:00 PM",
+            check_out: "8:00 AM - 11:00 AM",
+            cancellation_policy: "Full refund if cancelled 7+ days before check-in; within 7 days subject to one night's fee",
+            payment_methods: ["M-Pesa", "Bank Transfer", "Cash", "Cards"],
+            pet_policy: "No pets allowed (except certified service animals)",
+            location_info: "27-43 km from Amboseli National Park, views of Mount Kilimanjaro",
+            airport_transfer: "Available from JKIA (book 48 hours in advance)"
+        },
+        
+        // Metadata
+        metadata: {
+            timestamp: new Date().toISOString(),
+            session_id: getSessionId(),
+            page_url: window.location.href
+        }
+    };
+    
+    return payload;
+}
+
+// ==========================================
+// 9. GET OR CREATE SESSION ID
+// ==========================================
+function getSessionId() {
+    let sessionId = sessionStorage.getItem('safari_session_id');
+    if (!sessionId) {
+        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        sessionStorage.setItem('safari_session_id', sessionId);
+    }
+    return sessionId;
+}
+
+// ==========================================
+// 10. SEND MESSAGE TO N8N WEBHOOK
+// ==========================================
+async function sendMessageWithAI() {
+    const input = document.getElementById('chatInput404');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    if (!clientData.captured) {
+        alert('Please complete the registration form first.');
+        return;
+    }
+    
+    // Check rate limit
+    const rateLimitCheck = checkRateLimit();
+    if (!rateLimitCheck.allowed) {
+        displayBotMessage(rateLimitCheck.message);
+        return;
+    }
+    
+    const messagesDiv = document.getElementById('chatMessages');
+    
+    // Display user message
+    const userMsg = document.createElement('div');
+    userMsg.style.cssText = 'padding: 12px 15px; border-radius: 8px; background: #00B98E; color: white; align-self: flex-end; max-width: 80%; margin-bottom: 10px;';
+    userMsg.innerHTML = `<small style="opacity: 0.8;">${clientData.name}</small><br/>${escapeHtml(message)}`;
+    messagesDiv.appendChild(userMsg);
+    
+    input.value = '';
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    
+    // Show typing indicator
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'typing-indicator';
+    typingIndicator.id = 'typingIndicator';
+    typingIndicator.style.cssText = 'padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00B98E; align-self: flex-start; max-width: 80%; margin-bottom: 10px;';
+    typingIndicator.innerHTML = '<strong>Safari AI Assistant</strong><br/><span style="opacity: 0.6;">Thinking...</span>';
+    messagesDiv.appendChild(typingIndicator);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    
+    try {
+        // Build payload for n8n
+        const payload = buildN8NPayload(message);
+        
+        console.log('📤 Sending to n8n:', payload);
+        
+        // Call n8n webhook with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), N8N_CONFIG.timeout);
+        
+        const response = await fetch(N8N_CONFIG.webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+            throw new Error(`n8n webhook returned status ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('📥 Received from n8n:', data);
+        
+        // Extract AI response (adjust based on your n8n workflow response structure)
+        let aiAnswer = data.ai_response || data.response || data.message;
+        
+        if (!aiAnswer) {
+            console.error('No AI response in data:', data);
+            aiAnswer = "I apologize, but I didn't receive a proper response. Please try again or contact us at +254113556385.";
+        }
+        
+        // Remove typing indicator
+        typingIndicator.remove();
+        
+        // Display bot response
+        displayBotMessage(aiAnswer);
+        
+        // Add to conversation history
+        conversationHistory.push({ role: "user", content: message });
+        conversationHistory.push({ role: "assistant", content: aiAnswer });
+        
+        // Keep only last 10 messages (5 exchanges)
+        if (conversationHistory.length > 10) {
+            conversationHistory = conversationHistory.slice(-10);
+        }
+        
+        // Log conversation
+        logConversation(message, aiAnswer);
+        
+    } catch (error) {
+        console.error('❌ n8n Communication Error:', error);
+        
+        // Remove typing indicator
+        const indicator = document.getElementById('typingIndicator');
+        if (indicator) indicator.remove();
+        
+        // Determine error type
+        let errorMessage;
+        if (error.name === 'AbortError') {
+            errorMessage = "The request took too long. Please try a shorter question or contact us at +254113556385.";
+        } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            errorMessage = "⚠️ Cannot connect to the AI service. \n\nThis usually means:\n• n8n is not running (check localhost:5678)\n• Webhook URL is incorrect\n• CORS issue (if on different domains)\n\nPlease contact us directly:\n📱 WhatsApp: +254113556385\n📧 Email: kellylemayian6@gmail.com";
+        } else {
+            errorMessage = `There was an error processing your request: ${error.message}\n\nPlease try again or contact us at +254113556385.`;
+        }
+        
+        displayBotMessage(errorMessage);
+    }
+}
+
+// ==========================================
+// 11. DISPLAY BOT MESSAGE
+// ==========================================
+function displayBotMessage(message) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const botMsg = document.createElement('div');
+    botMsg.style.cssText = 'padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00B98E; align-self: flex-start; max-width: 80%; white-space: pre-line;';
+    botMsg.innerHTML = `<strong>Safari AI Assistant</strong><br/>${escapeHtml(message)}`;
+    messagesDiv.appendChild(botMsg);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// ==========================================
+// 12. ESCAPE HTML (Security)
+// ==========================================
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ==========================================
+// 13. LOG CONVERSATION
+// ==========================================
+function logConversation(question, answer) {
+    const conversationLog = {
+        client_name: clientData.name,
+        client_email: clientData.email,
+        client_phone: clientData.phone,
+        client_interest: clientData.interest,
+        property: currentPropertyData ? currentPropertyData.name : 'None',
+        question: question,
+        answer_preview: answer.substring(0, 100) + '...',
+        timestamp: new Date().toISOString()
+    };
+    
+    let logs = JSON.parse(localStorage.getItem('conversation_logs') || '[]');
+    logs.push(conversationLog);
+    
+    if (logs.length > 50) logs = logs.slice(-50);
+    localStorage.setItem('conversation_logs', JSON.stringify(logs));
+    
+    console.log('📊 Conversation logged:', conversationLog);
+}
+
+// ==========================================
+// 14. CLEAR CLIENT DATA
 // ==========================================
 function clearClientData() {
     localStorage.removeItem('safaristays_client');
+    conversationHistory = [];
+    messageCount = 0;
     clientData = {
         name: null,
         email: null,
@@ -271,26 +544,15 @@ function clearClientData() {
 }
 
 // ==========================================
-// 8. UPDATE sendMessage404 TO USE CLIENT DATA
+// 15. ALIAS FOR COMPATIBILITY
 // ==========================================
-// Modify the existing sendMessage404 function to include client context
-const originalSendMessage404 = sendMessage404;
-sendMessage404 = async function() {
-    // Check if client data is captured
-    if (!clientData.captured) {
-        alert('Please complete the form first to start chatting.');
-        return;
-    }
-    
-    // Call original function
-    await originalSendMessage404();
-};
+const sendMessage404 = sendMessageWithAI;
 
 // ==========================================
-// 9. INITIALIZE ON PAGE LOAD
+// 16. INITIALIZE ON PAGE LOAD
 // ==========================================
 document.addEventListener('DOMContentLoaded', function() {
-    // Load property data from sessionStorage (existing code)
+    // Load property data from sessionStorage
     const propertyDataStr = sessionStorage.getItem('selectedProperty');
     if (propertyDataStr) {
         currentPropertyData = JSON.parse(propertyDataStr);
@@ -305,7 +567,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('⚠️ No client data - showing form');
         showClientDataForm();
         
-        // Disable chat input until form is submitted
         const chatInput = document.getElementById('chatInput404');
         if (chatInput) {
             chatInput.disabled = true;
@@ -313,385 +574,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Enter key handler (existing code)
+    // Enter key handler
     const chatInput = document.getElementById('chatInput404');
     if (chatInput) {
         chatInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !chatInput.disabled) {
                 e.preventDefault();
-                sendMessage404();
+                sendMessageWithAI();
             }
         });
     }
 });
 
 // ==========================================
-// MAKE FUNCTION GLOBALLY AVAILABLE
+// 17. MAKE FUNCTIONS GLOBALLY AVAILABLE
 // ==========================================
 window.handleClientDataSubmit = handleClientDataSubmit;
 window.clearClientData = clearClientData;
-
-
-
-// ==========================================
-// GENERAL KNOWLEDGE BASE (Official Policies)
-// Based on: General Booking & Policy Inquiries.pdf
-// ==========================================
-const generalKnowledge = {
-    // CANCELLATION POLICY
-    cancellation: {
-        keywords: ['cancel', 'cancellation', 'refund', 'policy', 'change booking', 'reservation'],
-        answer: "Our **standard cancellation policy** allows for a **full refund** if you cancel **7 days before your check-in date**.\n\n" +
-               "Cancellations made **within 7 days** are subject to a fee equal to **one night's stay**.\n\n" +
-               "All details are included in your booking confirmation email."
-    },
-    
-    // PAYMENT METHODS
-    payment: {
-        keywords: ['payment', 'pay', 'accept', 'credit', 'card', 'mpesa', 'cash', 'method', 'visa', 'mastercard', 'paypal'],
-        answer: "We accept **major credit cards** (Visa, MasterCard), **PayPal**, and **M-Pesa** via the number provided in your booking confirmation.\n\n" +
-               "**Please note:** We do not accept cash payments on-site."
-    },
-    
-    // CHECK-IN/CHECK-OUT TIMES
-    checkin: {
-        keywords: ['check in', 'check-in', 'check out', 'check-out', 'time', 'arrival', 'departure', 'late checkout', 'early checkin'],
-        answer: "**Standard check-in** is at **2:00 PM** and **check-out** is at **10:00 AM**.\n\n" +
-               "**Early check-in or late check-out** is subject to availability and may incur a small fee. " +
-               "Please inquire with the property **24 hours prior**."
-    },
-    
-    // AIRPORT TRANSFER
-    transport: {
-        keywords: ['airport', 'transfer', 'transport', 'pickup', 'jkia', 'nairobi', 'how to get', 'travel'],
-        answer: "We can arrange **private airport transfers** from **Jomo Kenyatta International Airport (JKIA)** for a flat fee.\n\n" +
-               "Please let us know your **flight details at least 48 hours in advance** to confirm."
-    },
-    
-    // PET POLICY
-    pets: {
-        keywords: ['pet', 'dog', 'cat', 'animal', 'bring pet', 'allowed'],
-        answer: "**Safari Stays has a strict no-pet policy** across all our lodges and rentals to ensure the safety of local wildlife and adherence to park regulations.\n\n" +
-               "**Certified service animals** are an exception. Please contact us directly regarding this."
-    },
-    
-    // CONTACT/SUPPORT
-    contact: {
-        keywords: ['contact', 'phone', 'call', 'email', 'whatsapp', 'support', 'help', 'human', 'agent', 'talk to someone', 'customer service'],
-        answer: "We are happy to help!\n\n" +
-               "You can reach our **24/7 customer support team**:\n" +
-               "• 📱 WhatsApp: **+254113556385**\n" +
-               "• ☎️ Call: **+254113556385**\n" +
-               "• 📧 Email: **kellylemayian6@gmail.com**"
-    },
-    
-    // COMPANY INFO
-    about: {
-        keywords: ['about', 'safari stays', 'company', 'kenyan', 'who', 'what is', 'operates'],
-        answer: "**Safari Stays** is a **Kenyan-owned property management service** specializing in high-quality, authentic safari accommodation near Kimana and Amboseli National Park."
-    }
-};
-
-// Current property data (loaded from sessionStorage)
-let currentPropertyData = null;
-
-// ==========================================
-// 1. FORMAT PROPERTY CONTEXT FOR AI
-// ==========================================
-function formatPropertyContext(propertyData) {
-    if (!propertyData) return null;
-
-    const cleanedContext = {
-        property_name: propertyData.name || "Unknown Property",
-        type: propertyData.type || "Accommodation",
-        price_per_night: propertyData.price || "Price on request",
-        location: propertyData.location || "Kimana, Kajiado County",
-        room_size: propertyData.sqft || "Standard",
-        beds: propertyData.beds || "N/A",
-        bathrooms: propertyData.baths || "N/A",
-        description: propertyData.description || "No description available",
-        amenities: Array.isArray(propertyData.amenities) 
-            ? propertyData.amenities.join(", ") 
-            : "Standard amenities",
-        contact_number: propertyData.contact || "+254113556385",
-        check_in_time: "2:00 PM - 6:00 PM",
-        check_out_time: "8:00 AM - 11:00 AM"
-    };
-
-    return cleanedContext;
-}
-
-// ==========================================
-// 2. MATCH USER QUESTION TO ANSWER
-// ==========================================
-function getAnswerFromKnowledge(userMessage) {
-    const messageLower = userMessage.toLowerCase();
-    
-    // Check general knowledge base
-    for (const [key, knowledge] of Object.entries(generalKnowledge)) {
-        for (const keyword of knowledge.keywords) {
-            if (messageLower.includes(keyword)) {
-                return knowledge.answer;
-            }
-        }
-    }
-    
-    // Check property-specific questions
-    if (!currentPropertyData) return null;
-    
-    const context = formatPropertyContext(currentPropertyData);
-    
-    // Price questions
-    if (messageLower.match(/price|cost|rate|how much|tariff|fee/)) {
-        return `💰 **Pricing for ${context.property_name}:**\n\n` +
-               `**${context.price_per_night}** per night\n\n` +
-               `*Note: Taxes and fees should be confirmed upon booking. A 30% deposit is typically required.*\n\n` +
-               `Contact: ${context.contact_number}`;
-    }
-    
-    // Amenities questions
-    if (messageLower.match(/amenities|facilities|wifi|pool|breakfast|restaurant|parking|service/)) {
-        return `🏨 **Amenities at ${context.property_name}:**\n\n` +
-               `${context.amenities.split(', ').map(a => `✅ ${a}`).join('\n')}\n\n` +
-               `Need more details? Call: ${context.contact_number}`;
-    }
-    
-    // Location/Description questions
-    if (messageLower.match(/location|where|address|describe|about|summary|overview/)) {
-        return `📍 **About ${context.property_name}:**\n\n` +
-               `**Location:** ${context.location}\n` +
-               `**Type:** ${context.type}\n` +
-               `**Room:** ${context.room_size}\n\n` +
-               `${context.description}\n\n` +
-               `**Distance:** ~27-43 km from Amboseli National Park`;
-    }
-    
-    // Capacity questions
-    if (messageLower.match(/capacity|people|sleep|accommodate|guest|occupancy/)) {
-        return `👥 **Room Details for ${context.property_name}:**\n\n` +
-               `🛏️ **Beds:** ${context.beds}\n` +
-               `🚿 **Bathrooms:** ${context.bathrooms}\n` +
-               `📏 **Size:** ${context.room_size}\n\n` +
-               `Perfect for couples, families, or small groups!`;
-    }
-    
-    // Booking questions
-    if (messageLower.match(/book|reserve|available|availability|confirm|reservation/)) {
-        return `📅 **Ready to Book ${context.property_name}?**\n\n` +
-               `Contact us directly to check availability:\n\n` +
-               `📱 WhatsApp/Call: ${context.contact_number}\n` +
-               `📧 Email: kellylemayian6@gmail.com\n\n` +
-               `We'll help you secure your dates!`;
-    }
-    
-    return null;
-}
-
-// ==========================================
-// UPDATED sendMessage404 WITH CLIENT CONTEXT
-// Replace the existing sendMessage404 in chat-assistant.js
-// ==========================================
-
-async function sendMessage404() {
-    const input = document.getElementById('chatInput404');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    // Check if client data is captured
-    if (!clientData.captured) {
-        alert('Please complete the registration form first.');
-        return;
-    }
-    
-    const messagesDiv = document.getElementById('chatMessages');
-    
-    // Display user message with client name
-    const userMsg = document.createElement('div');
-    userMsg.style.cssText = 'padding: 12px 15px; border-radius: 8px; background: #00B98E; color: white; align-self: flex-end; max-width: 80%; margin-bottom: 10px;';
-    userMsg.innerHTML = `<small style="opacity: 0.8;">${clientData.name}</small><br/>${message}`;
-    messagesDiv.appendChild(userMsg);
-    
-    input.value = '';
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    
-    // Show typing indicator
-    const typingIndicator = document.createElement('div');
-    typingIndicator.className = 'typing-indicator';
-    typingIndicator.style.cssText = 'padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00B98E; align-self: flex-start; max-width: 80%; margin-bottom: 10px;';
-    typingIndicator.innerHTML = '<strong>Safari AI Assistant</strong><br/><span style="opacity: 0.6;">Typing...</span>';
-    messagesDiv.appendChild(typingIndicator);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    
-    // Simulate thinking delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Get personalized answer
-    let answer = getPersonalizedAnswer(message, clientData);
-    
-    // Remove typing indicator
-    typingIndicator.remove();
-    
-    // Display bot response
-    const botMsg = document.createElement('div');
-    botMsg.style.cssText = 'padding: 12px 15px; border-radius: 8px; background: white; border-left: 4px solid #00B98E; align-self: flex-start; max-width: 80%; white-space: pre-line;';
-    botMsg.innerHTML = `<strong>Safari AI Assistant</strong><br/>${answer}`;
-    messagesDiv.appendChild(botMsg);
-    
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    
-    // Log conversation for analytics (optional)
-    logConversation(clientData, message, answer);
-}
-
-// ==========================================
-// GET PERSONALIZED ANSWER WITH CLIENT CONTEXT
-// ==========================================
-function getPersonalizedAnswer(userMessage, client) {
-    // Get the standard answer
-    let answer = getAnswerFromKnowledge(userMessage);
-    
-    // Personalize based on client interest
-    if (client.interest && !answer.includes(client.name)) {
-        // Add personalized touch based on their interest
-        const personalizations = {
-            'Weekend Getaway': 'Perfect for a weekend escape! ',
-            'Safari Trip': 'Great choice for a safari adventure! ',
-            'Family Vacation': 'Ideal for families! ',
-            'Business Travel': 'We offer business-friendly amenities. ',
-            'Wedding/Event': 'We can help plan your special event! ',
-            'Long-term Stay': 'We offer flexible long-term rates. '
-        };
-        
-        const prefix = personalizations[client.interest] || '';
-        if (prefix && !userMessage.toLowerCase().includes('hello') && !userMessage.toLowerCase().includes('hi')) {
-            answer = prefix + answer;
-        }
-    }
-    
-    // Add booking urgency if they ask about availability
-    if (userMessage.toLowerCase().includes('available') && client.name) {
-        answer += `\n\n💡 **Quick tip for ${client.name}:** Properties in Kimana book fast, especially during peak safari season. Contact us ASAP to secure your dates!`;
-    }
-    
-    return answer;
-}
-
-// ==========================================
-// LOG CONVERSATION FOR ANALYTICS (Optional)
-// ==========================================
-function logConversation(client, question, answer) {
-    const conversationLog = {
-        client_name: client.name,
-        client_email: client.email,
-        client_phone: client.phone,
-        client_interest: client.interest,
-        property: currentPropertyData ? currentPropertyData.name : 'None',
-        question: question,
-        answer_provided: answer.substring(0, 100) + '...',
-        timestamp: new Date().toISOString()
-    };
-    
-    // Option 1: Send to backend
-    // fetch('/api/log-conversation', { ... })
-    
-    // Option 2: Store in localStorage for later export
-    let logs = JSON.parse(localStorage.getItem('conversation_logs') || '[]');
-    logs.push(conversationLog);
-    // Keep only last 50 conversations
-    if (logs.length > 50) logs = logs.slice(-50);
-    localStorage.setItem('conversation_logs', JSON.stringify(logs));
-    
-    console.log('📊 Conversation logged:', conversationLog);
-}
-
-// ==========================================
-// 4. INITIALIZE CHAT ON PAGE LOAD
-// ==========================================
-document.addEventListener('DOMContentLoaded', function() {
-    // Load property data from sessionStorage
-    const propertyDataStr = sessionStorage.getItem('selectedProperty');
-    if (propertyDataStr) {
-        currentPropertyData = JSON.parse(propertyDataStr);
-        console.log('✅ Property data loaded for chat:', currentPropertyData.name);
-    }
-    
-    // Enter key handler
-    const chatInput = document.getElementById('chatInput404');
-    if (chatInput) {
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage404();
-            }
-        });
-    }
-    
-    // Send button handler (in case it's not already set in HTML)
-    const sendBtn = document.querySelector('button[onclick="sendMessage404()"]');
-    if (sendBtn) {
-        sendBtn.addEventListener('click', sendMessage404);
-    }
-});
-
-// ==========================================
-// 5. OPTIONAL: ADVANCED AI INTEGRATION
-// For real AI (Gemini/OpenAI), uncomment and configure
-// ==========================================
-
-/*
-async function sendMessageWithAI() {
-    const input = document.getElementById('chatInput404');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    // Display user message (same as above)
-    // ...
-    
-    // Format context
-    const context = formatPropertyContext(currentPropertyData);
-    const systemPrompt = `You are the Safari Stays AI Assistant. Use ONLY the context provided to answer questions. Be helpful, concise, and friendly. Use emojis appropriately.
-
-PROPERTY CONTEXT:
-${JSON.stringify(context, null, 2)}
-
-GENERAL POLICIES:
-- Check-in: 2:00 PM - 6:00 PM
-- Check-out: 8:00 AM - 11:00 AM
-- Payment: M-Pesa, Bank Transfer, Cash, Cards
-- Cancellation: Free up to 7 days before check-in
-- Contact: +254113556385
-
-Answer the user's question based on this information.`;
-
-    try {
-        // Example: Gemini API call
-        const response = await fetch('YOUR_GEMINI_API_ENDPOINT', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer YOUR_API_KEY'
-            },
-            body: JSON.stringify({
-                prompt: systemPrompt + "\n\nUser: " + message,
-                temperature: 0.7,
-                max_tokens: 300
-            })
-        });
-        
-        const data = await response.json();
-        const aiAnswer = data.text || data.choices[0].message.content;
-        
-        // Display AI answer
-        // ...
-        
-    } catch (error) {
-        console.error('AI Error:', error);
-        // Fallback to keyword matching
-        const answer = getAnswerFromKnowledge(message);
-        // Display fallback answer
-        // ...
-    }
-}
-*/
+window.sendMessage404 = sendMessage404;
